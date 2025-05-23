@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!DOCTYPE service_bundle SYSTEM "/usr/share/lib/xml/dtd/service_bundle.dtd.1">
+<service_bundle type='manifest' name='zfs_auto_snapshot'>
+  <service name='site/zfs_auto_snapshot' type='service' version='1'>
+    <create_default_instance enabled='false'/>
+    <single_instance/>
+    
+    <dependency name='zfs'
+                grouping='require_all'
+                restart_on='error'
+                type='service'>
+      <service_fmri value='svc:/system/filesystem/zfs:default'/>
+    </dependency>
+    
+    <exec_method type='method'
+                 name='start'
+                 exec='/opt/scripts/zfs_auto_snapshot.sh'
+                 timeout_seconds='30'/>
+    
+    <exec_method type='method'
+                 name='stop'
+                 exec=':kill'
+                 timeout_seconds='30'/>
+    
+    <property_group name='startd' type='framework'>
+      <propval name='duration' type='astring' value='transient'/>
+    </property_group>
+    
+    <stability value='Unstable'/>
+  </service>
+</service_bundle>
