@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<!DOCTYPE service_bundle SYSTEM "/usr/share/lib/xml/dtd/service_bundle.dtd.1">
+<service_bundle type='manifest' name='myservice'>
+  <service name='site/myservice' type='service' version='1'>
+    <create_default_instance enabled='false'/>
+    <single_instance/>
+    
+    <!-- Dependency: Service hanya berjalan setelah filesystem dan network ready -->
+    <dependency name='filesystem'
+                grouping='require_all'
+                restart_on='error'
+                type='service'>
+      <service_fmri value='svc:/system/filesystem/minimal'/>
+    </dependency>
+    
+    <dependency name='network'
+                grouping='require_all'
+                restart_on='error'
+                type='service'>
+      <service_fmri value='svc:/network/default'/>
+    </dependency>
+    
+    <!-- Method start service -->
+    <exec_method type='method'
+                 name='start'
+                 exec='/opt/myservice.sh'
+                 timeout_seconds='10'/>
+    
+    <!-- Method stop service (gunakan pkill) -->
+    <exec_method type='method'
+                 name='stop'
+                 exec=':kill'
+                 timeout_seconds='10'/>
+    
+    <property_group name='startd' type='framework'>
+      <propval name='duration' type='astring' value='transient'/>
+    </property_group>
+    
+    <stability value='Unstable'/>
+  </service>
+</service_bundle>
