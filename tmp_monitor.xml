@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!DOCTYPE service_bundle SYSTEM "/usr/share/lib/xml/dtd/service_bundle.dtd.1">
+<service_bundle type='manifest' name='tmp_monitor'>
+  <service name='site/tmp_monitor' type='service' version='1'>
+    <create_default_instance enabled='false'/>
+    <single_instance/>
+    
+    <dependency name='filesystem'
+                grouping='require_all'
+                restart_on='error'
+                type='service'>
+      <service_fmri value='svc:/system/filesystem/minimal'/>
+    </dependency>
+    
+    <exec_method type='method'
+                 name='start'
+                 exec='/opt/scripts/tmp_monitor.sh'
+                 timeout_seconds='30'/>
+    
+    <exec_method type='method'
+                 name='stop'
+                 exec=':kill'
+                 timeout_seconds='30'/>
+    
+    <property_group name='startd' type='framework'>
+      <propval name='duration' type='astring' value='transient'/>
+    </property_group>
+    
+    <stability value='Unstable'/>
+  </service>
+</service_bundle>
